@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731704, g: 0.13414727, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &247783745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &329110099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,7 +234,6 @@ GameObject:
   - component: {fileID: 363032444}
   - component: {fileID: 363032443}
   - component: {fileID: 363032445}
-  - component: {fileID: 363032446}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -269,7 +268,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 0.5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -325,19 +324,6 @@ MonoBehaviour:
   centerOfMass: {x: 0.5, y: 0.5, z: 0.5}
   brushObject: {fileID: 1195690474}
   brushLinkView: {fileID: 928655397761925501}
---- !u!114 &363032446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 363032441}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf03a5344116fc2409f2fe687466e900, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vertexColliderPrefab: {fileID: 0}
 --- !u!1 &781649751
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,7 +340,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &781649752
 MonoBehaviour:
   m_ObjectHideFlags: 0

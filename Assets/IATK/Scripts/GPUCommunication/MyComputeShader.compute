@@ -6,10 +6,11 @@
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
 RWTexture2D<float4> Result;
-RWStructuredBuffer<float4> debugBuffer;
-RWStructuredBuffer<float4> debugBuffer2;
+RWStructuredBuffer<float3> debugBuffer1;
+RWStructuredBuffer<float3> debugBuffer2;
 
 float4x4 W_Matrix;
+float4x4 P_Matrix;
 float rand;
 
 float _size;
@@ -55,22 +56,16 @@ RWStructuredBuffer<float3> dataBuffer;
 StructuredBuffer<float> filteredIndicesBuffer;
 RWStructuredBuffer<int> brushedIndicesBuffer;
 
-void DebugOutput(float3 testPoint, float4 projectedCenter, int index)
-{
-    // Store testPoint and projectedCenter values in the buffer
-    // You might want to pack these values differently depending on your needs
-    debugBuffer[index] = float4(testPoint.x, testPoint.y, testPoint.z, 1.0);
-}
-
 //brush circle
 bool brush2DInCircle(float3 center, float radius, float3 testPoint)
 {
-	float4 projectedCenter = mul(W_Matrix, float4(center, 1.0));
+	float4 projectedTest = mul(W_Matrix, float4(testPoint, 1.0));
+	float4 projectedCenter = mul(P_Matrix, float4(center, 1.0));
 
-	debugBuffer[0] = float4(testPoint.x - projectedCenter.x, testPoint.y - projectedCenter.y, 0.0f, 0.0f);
-	debugBuffer2[0] = float4(testPoint.x, testPoint.y, testPoint.z, 1.0);
+	float3 ndcCent = projectedCenter.xyz / projectedCenter.w;
+	float3 ndcTest = projectedTest.xyz / projectedTest.w;
 
-	return sqrt(pow(testPoint.x - projectedCenter.x, 2) + pow(testPoint.y - projectedCenter.y, 2)) < radius;
+	return sqrt(pow(ndcTest.x - ndcCent.x, 2) + pow(ndcTest.y - ndcCent.y, 2)) < radius;
 }
 
 //brush sphere
@@ -114,8 +109,7 @@ bool Brush(int brushType, float3 filteredPosition)
 	{
 		//brush sphere
 	case 0:
-		return brush2DInCircle(float3(pointer1.x, pointer1.y, pointer1.z), RadiusSphere, filteredPosition);
-		//bool brush2DInCircle(float3 center, float radius, float3 testPoint)
+		return brush2DInCircle(pointer1, RadiusSphere, filteredPosition);
 		//brush cube
 	case 1:
 		float3 TL = float3(pointer1.x, pointer1.y, pointer1.z);
@@ -134,16 +128,6 @@ bool Brush(int brushType, float3 filteredPosition)
 	}
 }
 
-// TODO
-// brush sphere
-
-//brush rectangle
-
-//brush cube
-
-//texturebrush
-
-// brush histogram
 //*********************************
 // helper functions
 //*********************************
@@ -166,65 +150,46 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 	{
 		float3 filteredPosition = dataBuffer[idx];
 
-			// Filter out indices
-	/*	if (
-			(filteredPosition.x >= 0 &&
-				filteredPosition.x <= 1 * 1 &&
-				filteredPosition.y >= 0 &&
-				filteredPosition.y <= 1 * 1 &&
-				filteredPosition.z >= 0 &&
-				filteredPosition.z <= 1 * 1
-				))*/
-		{
-			if (Brush(BrushMode, filteredPosition))
-			{
-				switch (SelectionMode) {
-					// Free selection	
-				case 0:
-					// Additive selection
-				case 1:
-					Result[id.xy] = float4(1.0, PointClass, PointClass, PointClass);  // brushed - y = PointClass
-					break;
+		float4 projectedTest = mul(W_Matrix, float4(filteredPosition, 1.0));
+		float4 projectedCenter = mul(P_Matrix, float4(pointer1, 1.0));
 
-					// Subtractive selection
-				case 2:
-				default:
-					Result[id.xy] = float4(0.0, 0.0, 0.0, 1.0);  // not brushed
-					break;
-				}
-			}
-			// Free selection un-brushes points
-			else if (SelectionMode == 0 && !HasFreeBrushReset)
-			{
+        // Writing to debug buffers before calling Brush
+        debugBuffer1[idx] = float3(filteredPosition);
+		debugBuffer2[idx] = float3(pointer1);
+        //debugBuffer2[idx] = float3(sqrt(pow(filteredPosition.x - pointer1.x, 2) + pow(filteredPosition.y - pointer1.y, 2)), 0.0, 0.0);
+
+		if (Brush(BrushMode, filteredPosition))
+		{
+			switch (SelectionMode) {
+				// Free selection	
+			case 0:
+				// Additive selection
+			case 1:
+				Result[id.xy] = float4(1.0, PointClass, PointClass, PointClass);  // brushed - y = PointClass
+				break;
+
+				// Subtractive selection
+			case 2:
+			default:
 				Result[id.xy] = float4(0.0, 0.0, 0.0, 1.0);  // not brushed
-			}
-			else
-			{
-				float4 dummydata;
-				//DebugOutput(filteredPosition, dummydata, 0);
+				break;
 			}
 		}
-
-		/*else
+		// Free selection un-brushes points
+		else if (SelectionMode == 0 && !HasFreeBrushReset)
 		{
 			Result[id.xy] = float4(0.0, 0.0, 0.0, 1.0);  // not brushed
-		}*/
+		}
 	}
 }
 
 [numthreads(32, 32, 1)]
 void ComputeBrushedIndicesArray(uint3 id : SV_DispatchThreadID)
 {
-	//    int x = id.x % _size;
-	//    int y = floor(id.x / _size);
-	//    float2 pos = float2(x, y);
-
 	int index = id.x + id.y * _size;
 
-	//brushedIndicesBuffer[index] = Result[id.xy].r;
-
 	if (Result[id.xy].x > 0.0)
-		brushedIndicesBuffer[index] = Result[id.xy].w * 10000000.0;
+		brushedIndicesBuffer[index] = Result[id.xy].w * 10000000.0;  //RB: 
 	else
 		brushedIndicesBuffer[index] = -1;
 }

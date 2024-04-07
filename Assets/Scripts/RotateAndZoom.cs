@@ -21,13 +21,13 @@ public class RotateAndZoom : MonoBehaviour
 
     void Start()
     {
-        fileWriter = new StreamWriter(fileName, true);
+        fileWriter = new StreamWriter(fileName, false);
         SetInitialCameraPosition();
     }
 
     void OnEnable()
     {
-        fileWriter = new StreamWriter(fileName, true);
+        fileWriter = new StreamWriter(fileName, false);
         SetInitialCameraPosition();
         // Assign brushObject to the public variables input1 and input2 in the brushLinkView object
         brushLinkView.input1 = brushObject.transform;

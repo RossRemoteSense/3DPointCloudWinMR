@@ -89,16 +89,12 @@ public class BrushingAndLinkingViews : MonoBehaviour
     [Range(0f,1f)]
     public float classPPDebug; 
 
+    float[] debugData;
+    float[] debugData2;
+
     private void Start()
     {
         InitialiseShaders();
-
-        debugBuffer = new ComputeBuffer(100, sizeof(float) * 4); // Adjust size and stride
-        computeShader.SetBuffer(kernelComputeBrushTexture, "debugBuffer", debugBuffer);
-
-        debugBuffer2 = new ComputeBuffer(100, sizeof(float) * 4); // Adjust size and stride
-        computeShader.SetBuffer(kernelComputeBrushTexture, "debugBuffer2", debugBuffer2);
-
      //   bigMeshVertices = v.BigMesh.getBigMeshVertices();
     }
 
@@ -109,7 +105,6 @@ public class BrushingAndLinkingViews : MonoBehaviour
     {
         kernelComputeBrushTexture = computeShader.FindKernel("CSMain");
         kernelComputeBrushedIndices = computeShader.FindKernel("ComputeBrushedIndicesArray");
-        UnityEngine.Debug.Log("In Init");
     }
 
     /// <summary>
@@ -132,17 +127,23 @@ public class BrushingAndLinkingViews : MonoBehaviour
 
         texSize = NextPowerOf2((int)Mathf.Sqrt(dataCount));
         brushedIndicesTexture = new RenderTexture(texSize, texSize, 32, RenderTextureFormat.ARGB32);
-        
+
+        debugBuffer = new ComputeBuffer(dataCount, 12); // Adjust size and stride
+        debugBuffer.SetData(new Vector3[dataCount]);
+        computeShader.SetBuffer(kernelComputeBrushTexture, "debugBuffer1", debugBuffer);
+
+        debugBuffer2 = new ComputeBuffer(dataCount, 12); // Adjust size and stride
+        debugBuffer.SetData(new Vector3[dataCount]);
+        computeShader.SetBuffer(kernelComputeBrushTexture, "debugBuffer2", debugBuffer2);
+
+        debugData = new float[dataCount * 3]; // Adjust accordingly
+        debugData2 = new float[dataCount * 3]; // Adjust accordingly
+
         brushedIndicesTexture.enableRandomWrite = true;
         brushedIndicesTexture.filterMode = FilterMode.Point;
         brushedIndicesTexture.Create();
 
         myRenderMaterial.SetTexture("_MainTex", brushedIndicesTexture);
-        
-        Matrix4x4 mvpMatrix = Camera.main.projectionMatrix * Camera.main.worldToCameraMatrix * transform.localToWorldMatrix;
-        computeShader.SetMatrix("W_Matrix", mvpMatrix);
-
-        UnityEngine.Debug.Log("mvpMatrix: " + mvpMatrix);
         computeShader.SetFloat("_size", texSize);
 
         computeShader.SetTexture(kernelComputeBrushTexture, "Result", brushedIndicesTexture);
@@ -203,6 +204,9 @@ public class BrushingAndLinkingViews : MonoBehaviour
         //}
 
         dataBuffer.SetData(_bigMeshVertices);
+        UnityEngine.Debug.Log(dataBuffer);
+        UnityEngine.Debug.Log(_bigMeshVertices);
+
         computeShader.SetBuffer(kernelComputeBrushTexture, "dataBuffer", dataBuffer);
 
         filteredIndicesBuffer.SetData(_filterChannel);// BigMesh.GetFilterChannel());
@@ -300,7 +304,6 @@ public class BrushingAndLinkingViews : MonoBehaviour
                 break;
         }
 
-
         //print((float)_PointClass / 10f);
         hasFreeBrushReset = false;
 
@@ -311,10 +314,9 @@ public class BrushingAndLinkingViews : MonoBehaviour
             switch (BRUSH_TYPE)
             {
                 case BrushType.SPHERE:
-                    //projectedPointer1 = vis.transform.InverseTransformPoint(input1.transform.position);
-                    projectedPointer1 = Camera.main.transform.InverseTransformPoint(input1.transform.position);
-                    UnityEngine.Debug.Log($"pointer1: {projectedPointer1.ToString()}");
-                    computeShader.SetFloats("pointer1", projectedPointer1.x, projectedPointer1.y, projectedPointer1.z);
+                    projectedPointer1 = vis.transform.InverseTransformPoint(input1.transform.position);
+                    //UnityEngine.Debug.Log($"pointer1: {projectedPointer1.ToString()}");
+                    computeShader.SetFloats("pointer1", input1.transform.position.x, input1.transform.position.y, input1.transform.position.z);
 
                     break;
                 case BrushType.BOX:
@@ -349,9 +351,14 @@ public class BrushingAndLinkingViews : MonoBehaviour
             computeShader.SetFloat("width", 1);
             computeShader.SetFloat("height", 1);
             computeShader.SetFloat("depth", 1);
-            Matrix4x4 mvpMatrix = Camera.main.projectionMatrix * Camera.main.worldToCameraMatrix * transform.localToWorldMatrix;
+
+            // Matrix4x4 mvpMatrix = vis.transform.localToWorldMatrix; //Camera.main.projectionMatrix * Camera.main.worldToCameraMatrix * transform.localToWorldMatrix;
+            Matrix4x4 vpMatrix = GL.GetGPUProjectionMatrix(Camera.main.projectionMatrix, true) * Camera.main.worldToCameraMatrix;
+            Matrix4x4 mvpMatrix = vpMatrix * vis.transform.parent.localToWorldMatrix;
             computeShader.SetMatrix("W_Matrix", mvpMatrix);
-            UnityEngine.Debug.Log("mvpMatrix: " + mvpMatrix);
+            
+            // Matrix4x4 projMatrix = Camera.main.projectionMatrix * Camera.main.worldToCameraMatrix;
+            computeShader.SetMatrix("P_Matrix", vpMatrix);
 
             // Tell the shader whether or not the visualisation's points have already been reset by a previous brush, required to allow for
             // multiple visualisations to be brushed with the free selection tool
@@ -364,19 +371,18 @@ public class BrushingAndLinkingViews : MonoBehaviour
             computeShader.Dispatch(kernelComputeBrushTexture, Mathf.CeilToInt(texSize / 32f), Mathf.CeilToInt(texSize / 32f), 1);
             //ComputeShader.Dispatch(kernelIndex, threadGroupsX, threadGroupsY, threadGroupsZ);
 
-            GraphicsFence fence = UnityEngine.Graphics.CreateGraphicsFence(UnityEngine.GraphicsFenceType.AsyncQueueSynchronization, SynchronisationStage.PixelProcessing);
-            UnityEngine.Graphics.WaitOnAsyncGraphicsFence(fence);
-
             // Read back the data
-            float[] debugData = new float[100 * 4]; // Adjust accordingly
             debugBuffer.GetData(debugData);
-
-            float[] debugData2 = new float[100 * 4]; // Adjust accordingly
             debugBuffer2.GetData(debugData2);
 
-            //UnityEngine.Debug.Log("Debug Data: " + debugData[0].x + " " + debugData[0].y + " " + debugData[0].z + " " + debugData[3].w);
-            UnityEngine.Debug.Log($"First float4 in debugBuffer: {debugData[0]:F} {debugData[1]:F} {debugData[2]:F} {debugData[3]:F}");
-            UnityEngine.Debug.Log($"Second float4 in debugBuffer2: {debugData2[0]:F} {debugData2[1]:F} {debugData2[2]:F} {debugData2[3]:F}");
+            int start = 0; // Define start index
+            int end = 30; // Define end index (inclusive)
+
+            for (int i = start; i <= end; i += 3)
+            {
+                UnityEngine.Debug.Log($"Index {i/3}: Debug1 X: {debugData[i]:F}, Y: {debugData[i+1]:F}, Z: {debugData[i+2]:F}");
+                UnityEngine.Debug.Log($"Index {i/3}: Debug2 X: {debugData2[i]:F}, Y: {debugData2[i+1]:F}, Z: {debugData2[i+2]:F}");
+            }
 
             vis.BigMesh.SharedMaterial.SetTexture("_BrushedTexture", brushedIndicesTexture);
             vis.BigMesh.SharedMaterial.SetFloat("_DataWidth", texSize);
@@ -394,7 +400,6 @@ public class BrushingAndLinkingViews : MonoBehaviour
         if (!brushedIndicesRequest.hasError)
         {
             brushedIndices = brushedIndicesRequest.GetData<float>().ToList();
-            UnityEngine.Debug.Log("read the data");
         }
     }
     /// <summary>
