@@ -14,7 +14,7 @@ public class RotateAndZoom : MonoBehaviour
     public Camera mainCamera; // The camera to be controlled    
     public Vector3 centerOfMass; // Center of mass of the objects made public
     public GameObject brushObject; // The object to be used for brushing
-    public BrushingAndLinkingViews brushLinkView; // The BrushingAndLinkingViews object
+    public BrushingAndLinkingViews[] brushLinkViews; // Array of BrushingAndLinkingViews objects
 
     private StreamWriter fileWriter;
     private GameObject sphere;
@@ -29,9 +29,12 @@ public class RotateAndZoom : MonoBehaviour
     {
         fileWriter = new StreamWriter(fileName, false);
         SetInitialCameraPosition();
-        // Assign brushObject to the public variables input1 and input2 in the brushLinkView object
-        brushLinkView.input1 = brushObject.transform;
-        brushLinkView.input2 = brushObject.transform;
+        // Assign brushObject to the public variables input1 and input2 in each brushLinkView object
+        foreach (var brushLinkView in brushLinkViews)
+        {
+            brushLinkView.input1 = brushObject.transform;
+            brushLinkView.input2 = brushObject.transform;
+        }
     }
 
     void OnDisable()
@@ -78,9 +81,13 @@ public class RotateAndZoom : MonoBehaviour
             }
         }
 
+        // Set isBrushing for all brushLinkViews using shift key and mouse button press combo
         if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButton(0))
         {
-            brushLinkView.isBrushing = true;
+            foreach (var brushLinkView in brushLinkViews)
+            {
+                brushLinkView.isBrushing = true;
+            }
             brushObject.SetActive(true);
 
             // Convert mouse position to world position
@@ -93,11 +100,13 @@ public class RotateAndZoom : MonoBehaviour
             // Update the position of the brushObject to follow the mouse in the world view
             brushObject.transform.position = worldPosition;
         }
-        else if (!Input.GetKey(KeyCode.LeftShift))
+        else if (!Input.GetKey(KeyCode.LeftShift) || !Input.GetMouseButton(0))
         {
-            brushLinkView.isBrushing = false;
+            foreach (var brushLinkView in brushLinkViews)
+            {
+                brushLinkView.isBrushing = false;
+            }
             brushObject.SetActive(false);
-            // Optionally, reset brushObject's position or state if needed
         }
 
         // Handle Zoom

@@ -240,12 +240,16 @@ public class BrushingAndLinkingViews : MonoBehaviour
         {
             if (hasInitialised)
             {
+                UnityEngine.Debug.Log("***********************************Updating Buffers*************************************************");
+                UnityEngine.Debug.Log("*********************************************************************************************************************");
                 UpdateBrushTexture();
 
              //   UpdateBrushedIndices();
             }
             else
             {
+                UnityEngine.Debug.Log("***********************************Initialising buffers and textures*************************************************");
+                UnityEngine.Debug.Log("*********************************************************************************************************************");
                 InitialiseBuffersAndTextures(brushingVisualisations[0].BigMesh.NB_VERTTICES);
             }
         }

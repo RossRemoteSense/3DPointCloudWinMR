@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &247783745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Data: {fileID: 4900000, guid: 93bea44202923874ebbc462882fbcf96, type: 3}
-  BrushingAndLinkingViews: {fileID: 928655397761925501}
+  BrushingAndLinkingViews: {fileID: 286685560}
   xAxis: tsne-1
   yAxis: tsne-2
   zAxis: tsne-3
@@ -171,7 +171,67 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &286685559
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 286685561}
+  - component: {fileID: 286685560}
+  m_Layer: 0
+  m_Name: BrushingLinkingViews (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &286685560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286685559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92606cc2eeae3944dbca3ec01104b62d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  computeShader: {fileID: 7200000, guid: 1afc81dc8b1b2a044bfd3b449f590937, type: 3}
+  myRenderMaterial: {fileID: 2100000, guid: 31665473af5adfd4e8b8150ce9268dbe, type: 2}
+  brushingVisualisations: []
+  brushedLinkingVisualisations: []
+  isBrushing: 1
+  _PointClass: 40
+  brushRadius: 0.01
+  showBrush: 1
+  brushSizeFactor: 1
+  input1: {fileID: 1195690478}
+  input2: {fileID: 1195690478}
+  BRUSH_TYPE: 0
+  SELECTION_TYPE: 1
+  brushedIndices: []
+  debugObjectTexture: {fileID: 0}
+  classPPDebug: 0
+--- !u!4 &286685561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286685559}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &329110098
 GameObject:
@@ -189,7 +249,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &329110099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,7 +263,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Data: {fileID: 4900000, guid: e845248abed852a4bb0b4069dbd5b69b, type: 3}
-  BrushingAndLinkingViews: {fileID: 928655397761925501}
+  BrushingAndLinkingViews: {fileID: 2105974421}
   xAxis: tsne-1
   yAxis: tsne-2
   zAxis: tsne-3
@@ -221,7 +281,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &363032441
 GameObject:
@@ -297,7 +357,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &363032445
 MonoBehaviour:
@@ -323,7 +383,11 @@ MonoBehaviour:
   mainCamera: {fileID: 363032443}
   centerOfMass: {x: 0.5, y: 0.5, z: 0.5}
   brushObject: {fileID: 1195690474}
-  brushLinkView: {fileID: 928655397761925501}
+  brushLinkViews:
+  - {fileID: 928655397761925501}
+  - {fileID: 2105974421}
+  - {fileID: 1595065577}
+  - {fileID: 286685560}
 --- !u!1 &781649751
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +404,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &781649752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -354,7 +418,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Data: {fileID: 4900000, guid: 939690954acd40d4492b0d7c38950763, type: 3}
-  BrushingAndLinkingViews: {fileID: 928655397761925501}
+  BrushingAndLinkingViews: {fileID: 1595065577}
   xAxis: tsne-1
   yAxis: tsne-2
   zAxis: tsne-3
@@ -372,7 +436,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &933281164
 GameObject:
@@ -519,7 +583,127 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1595065576
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1595065578}
+  - component: {fileID: 1595065577}
+  m_Layer: 0
+  m_Name: BrushingLinkingViews (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1595065577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595065576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92606cc2eeae3944dbca3ec01104b62d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  computeShader: {fileID: 7200000, guid: 19fc55b22306b35468b51e70a04c4ba7, type: 3}
+  myRenderMaterial: {fileID: 2100000, guid: 2c4823f7c2919d64ca6f6df821efefb1, type: 2}
+  brushingVisualisations: []
+  brushedLinkingVisualisations: []
+  isBrushing: 1
+  _PointClass: 40
+  brushRadius: 0.01
+  showBrush: 1
+  brushSizeFactor: 1
+  input1: {fileID: 1195690478}
+  input2: {fileID: 1195690478}
+  BRUSH_TYPE: 0
+  SELECTION_TYPE: 1
+  brushedIndices: []
+  debugObjectTexture: {fileID: 0}
+  classPPDebug: 0
+--- !u!4 &1595065578
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595065576}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2105974420
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2105974422}
+  - component: {fileID: 2105974421}
+  m_Layer: 0
+  m_Name: BrushingLinkingViews (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2105974421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105974420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92606cc2eeae3944dbca3ec01104b62d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  computeShader: {fileID: 7200000, guid: 312b520dc1d518145927d94398f82ced, type: 3}
+  myRenderMaterial: {fileID: 2100000, guid: 0b7667e5764083749b30741bfdc70afd, type: 2}
+  brushingVisualisations: []
+  brushedLinkingVisualisations: []
+  isBrushing: 1
+  _PointClass: 40
+  brushRadius: 0.01
+  showBrush: 1
+  brushSizeFactor: 1
+  input1: {fileID: 1195690478}
+  input2: {fileID: 1195690478}
+  BRUSH_TYPE: 0
+  SELECTION_TYPE: 1
+  brushedIndices: []
+  debugObjectTexture: {fileID: 0}
+  classPPDebug: 0
+--- !u!4 &2105974422
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105974420}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &928655397761925500
 Transform:
@@ -534,7 +718,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &928655397761925501
 MonoBehaviour:
