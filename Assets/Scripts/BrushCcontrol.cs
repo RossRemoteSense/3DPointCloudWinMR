@@ -8,14 +8,13 @@ using Valve.VR;
 public class BrushCcontrol : MonoBehaviour
 {
     public GameObject brushObject;
-    public GameObject brushingView;
+    public BrushingAndLinkingViews[] brushingViews;
     public GameObject cameraRig;
     public SteamVR_Behaviour_Pose leftHandController;
     public SteamVR_Behaviour_Pose rightHandController;
     public string fileName;
     private StreamWriter writer;
-    private BrushingAndLinkingViews brushingAndLinkingViewsScript;
-
+    
     public class SerializableVector3
     {
         public float x;
@@ -63,7 +62,6 @@ public class BrushCcontrol : MonoBehaviour
     void Start()
     {
         writer = new StreamWriter(fileName, true);
-        brushingAndLinkingViewsScript = brushingView.GetComponent<BrushingAndLinkingViews>();
     }
 
     // Update is called once per frame
@@ -74,21 +72,24 @@ public class BrushCcontrol : MonoBehaviour
             Debug.LogError("cameraRig is null");
         }
 
-        if (brushingAndLinkingViewsScript == null)
-        {
-            Debug.LogError("brushingAndLinkingViewsScript is null");
-        }
-
         if (SteamVR_Actions.default_GrabPinch.GetStateDown(SteamVR_Input_Sources.LeftHand))
         {
             brushObject.SetActive(true);
-            brushingAndLinkingViewsScript.isBrushing = true;
+
+            foreach (var view in brushingViews)
+            {
+                view.isBrushing = true;
+            }
         }
         
         if (SteamVR_Actions.default_GrabPinch.GetStateUp(SteamVR_Input_Sources.LeftHand))
         {
             brushObject.SetActive(false);
-            brushingAndLinkingViewsScript.isBrushing = false;
+
+            foreach (var view in brushingViews)
+            {
+                view.isBrushing = false;
+            }
         }
 
         Vector3 leftPosition = leftHandController.transform.position;

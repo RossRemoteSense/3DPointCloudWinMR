@@ -63,6 +63,7 @@ bool brush2DInCircle(float3 center, float radius, float4 testPoint)
 //brush sphere
 bool brushSphere(float3 center, float radius, float3 testPoint)
 {
+	center.y -= 1.0f;
 	float3 displacementToCenter = testPoint - center;
 	float radiusSqr = radius * radius;
 	bool intersects = dot(displacementToCenter, displacementToCenter) < radiusSqr;
